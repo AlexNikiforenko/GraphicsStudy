@@ -7,7 +7,8 @@ MainGame::MainGame()
     : m_window(nullptr),
     m_screen_width(1024),
     m_screen_height(768),
-    m_game_state(GameState::PLAY)
+    m_game_state(GameState::PLAY),
+    m_time(0.0f)
 {
 
 }
@@ -78,6 +79,7 @@ void MainGame::initShaders() {
 void MainGame::gameLoop() {
     while (m_game_state != GameState::EXIT) {
         processInput();
+        m_time += 0.001;
         drawGame();
     }
 }
@@ -101,6 +103,9 @@ void MainGame::drawGame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_colorProgram.use();
+
+    GLuint timeLocation = m_colorProgram.getUniformLocation("time");
+    glUniform1f(timeLocation, m_time);
 
     m_sprite.draw();
 
