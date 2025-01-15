@@ -12,6 +12,8 @@ GLSLProgram::~GLSLProgram() {
 }
 
 void GLSLProgram::compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
+    m_programID = glCreateProgram();
+
     m_vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     if (m_vertexShaderID == 0) {
         fatalError("Vertex shader failed to be created!");
@@ -27,8 +29,6 @@ void GLSLProgram::compileShaders(const std::string& vertexShaderFilePath, const 
 }
 
 void GLSLProgram::linkShaders() {
-    m_programID = glCreateProgram();
-
     glAttachShader(m_programID, m_vertexShaderID);
     glAttachShader(m_programID, m_fragmentShaderID);
 
@@ -76,6 +76,7 @@ void GLSLProgram::unuse() {
 }
 
 void GLSLProgram::compileShader(const std::string& filePath, GLuint id) {
+    // Read shader from file
     std::ifstream vertexFile(filePath);
     if (vertexFile.fail()) {
         perror(filePath.c_str());
@@ -90,11 +91,13 @@ void GLSLProgram::compileShader(const std::string& filePath, GLuint id) {
     }
 
     vertexFile.close();
+    // Get shader and compile it
     const char* contentsPtr = fileContents.c_str();
     glShaderSource(id, 1, &contentsPtr, nullptr);
 
     glCompileShader(id);
 
+    // Get shader's compile status
     GLint success = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &success);
     if (success == GL_FALSE) {
