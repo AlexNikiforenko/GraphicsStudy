@@ -1,5 +1,8 @@
 #include "MainGame.h"
+
 #include "Errors.h"
+#include "SDL_image.h"
+
 #include <iostream>
 #include <string>
 
@@ -29,6 +32,12 @@ void MainGame::initSystems() {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         logSDLError("SDL couldn't be initialize!");
+        return;
+    }
+
+    // Initialize SDL_image
+    if (IMG_Init(IMG_INIT_PNG) < 0) {
+        logSDLImageError("SDL_image couldn't be initialize!");
         return;
     }
 

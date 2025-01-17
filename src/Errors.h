@@ -4,6 +4,7 @@
 #include <string>
 
 void logSDLError(std::string msg);
+void logSDLImageError(std::string msg);
 void fatalError(std::string msg);
 
 #endif
