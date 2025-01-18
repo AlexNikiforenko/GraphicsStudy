@@ -3,6 +3,9 @@
 
 #include "GLSLProgram.h"
 #include "Sprite.h"
+#include "GLTexture.h"
+
+
 #include "../include/glad/glad.h"
 #include "SDL2/SDL.h"
 
@@ -33,6 +36,7 @@ private:
 
     Sprite m_sprite;
     GLSLProgram m_colorProgram;
+    GLTexture m_playerTexture;
 
     float m_time;
 };

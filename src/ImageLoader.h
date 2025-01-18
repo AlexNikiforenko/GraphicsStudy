@@ -8,9 +8,9 @@
 
 class ImageLoader {
 public:
-    GLTexture loadPNG(std::string filePath);
+    static GLTexture loadPNG(std::string filePath);
 private:
-    SDL_Surface* loadSurface(std::string filePath);
+    static SDL_Surface* loadSurface(std::string filePath);
 };
 
 #endif

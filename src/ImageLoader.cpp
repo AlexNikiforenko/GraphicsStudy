@@ -8,6 +8,14 @@ SDL_Surface* ImageLoader::loadSurface(std::string filePath) {
         logSDLImageError("Couldn't load surface!");
         return nullptr;
     }
+    SDL_Surface* optimizedSurface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0);
+    if (!optimizedSurface) {
+        logSDLImageError("Couldn't optimize surface to RGBA32!");
+        SDL_FreeSurface(surface);
+        return nullptr;
+    }
+    SDL_FreeSurface(surface);
+    surface = optimizedSurface;
     return surface;
 }
 
