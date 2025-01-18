@@ -2,7 +2,6 @@
 
 #include "Errors.h"
 #include "SDL_image.h"
-#include "ImageLoader.h"
 
 #include <iostream>
 #include <string>
@@ -24,9 +23,9 @@ MainGame::~MainGame()
 
 void MainGame::run() {
     initSystems();
-
-    m_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
-    m_playerTexture = ImageLoader::loadPNG("../Textures/Duck/Sprites/Idle/Idle 002.png");
+    m_sprites.push_back(new Sprite(-1.0f, -1.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
+    m_sprites.push_back(new Sprite(0.0f, -1.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
+    m_sprites.push_back(new Sprite(-1.0f, 0.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
 
     gameLoop();
 }
@@ -105,7 +104,7 @@ void MainGame::processInput() {
                 m_game_state = GameState::EXIT;
                 break;
             case SDL_MOUSEMOTION:
-                std::cout << e.motion.x << " " << e.motion.y << std::endl;
+                //std::cout << e.motion.x << " " << e.motion.y << std::endl;
                 break;
         }
     }
@@ -117,14 +116,15 @@ void MainGame::drawGame() {
 
     m_colorProgram.use();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_playerTexture.id);
     GLint textureLocation = m_colorProgram.getUniformLocation("mySampler");
     glUniform1i(textureLocation, 0);
 
     GLint timeLocation = m_colorProgram.getUniformLocation("time");
     glUniform1f(timeLocation, m_time);
 
-    m_sprite.draw();
+    for (Sprite*& sprite : m_sprites) {
+        sprite->draw();
+    }
 
     glBindTexture(GL_TEXTURE_2D, 0);
     m_colorProgram.unuse();

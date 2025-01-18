@@ -5,9 +5,10 @@
 #include "Sprite.h"
 #include "GLTexture.h"
 
-
 #include "../include/glad/glad.h"
 #include "SDL2/SDL.h"
+
+#include <vector>
 
 enum class GameState {
     PLAY,
@@ -34,9 +35,8 @@ private:
     int m_screen_height;
     GameState m_game_state;
 
-    Sprite m_sprite;
+    std::vector<Sprite*> m_sprites;
     GLSLProgram m_colorProgram;
-    GLTexture m_playerTexture;
 
     float m_time;
 };
