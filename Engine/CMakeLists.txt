@@ -16,6 +16,7 @@ add_library(Engine STATIC ${ENGINE_SOURCES})
 target_include_directories(Engine PUBLIC
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_IMAGE_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 target_link_libraries(Engine PUBLIC ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})

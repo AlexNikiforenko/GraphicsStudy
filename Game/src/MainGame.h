@@ -6,6 +6,8 @@
 #include "Engine/Sprite.h"
 #include "Engine/GLTexture.h"
 
+#include "Engine/Camera2D.h"
+
 #include "SDL2/SDL.h"
 
 #include <vector>
@@ -38,6 +40,7 @@ private:
 
     std::vector<Engine::Sprite*> m_sprites;
     Engine::GLSLProgram m_colorProgram;
+    Engine::Camera2D m_camera;
 
     float m_fps;
     float m_maxFPS;

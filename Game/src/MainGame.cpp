@@ -26,16 +26,17 @@ MainGame::~MainGame()
 
 void MainGame::run() {
     initSystems();
-    m_sprites.push_back(new Engine::Sprite(-1.0f, -1.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
-    m_sprites.push_back(new Engine::Sprite(0.0f, -1.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
-    m_sprites.push_back(new Engine::Sprite(-1.0f, 0.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
-    m_sprites.push_back(new Engine::Sprite(0.0f, 0.0f, 1.0f, 1.0f, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
+    m_sprites.push_back(new Engine::Sprite(0.0f, 0.0f, m_screenWidth / 2, m_screenWidth / 2, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
+    m_sprites.push_back(new Engine::Sprite(m_screenWidth / 2, 0.0f, m_screenWidth / 2, m_screenWidth / 2, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
 
+    // Centres camera's position
+    m_camera.setPosition(m_camera.getPosition() + glm::vec2(m_screenWidth / 2.0f, m_screenHeight / 2.0f));
     gameLoop();
 }
 
 void MainGame::initSystems() {
     Engine::init();
+    m_camera.init(m_screenWidth, m_screenHeight);
 
     m_window.create("GameEngine", m_screenWidth, m_screenHeight, 0);
 
@@ -57,6 +58,7 @@ void MainGame::gameLoop() {
 
         processInput();
         m_time += 0.001;
+        m_camera.update();
         drawGame();
         calculateFPS();
 
@@ -79,6 +81,10 @@ void MainGame::gameLoop() {
 
 void MainGame::processInput() {
     SDL_Event e;
+
+    const float CAMERA_SPEED = 20.0f;
+    const float SCALE_SPEED = 0.1f;
+
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_QUIT:
@@ -86,6 +92,28 @@ void MainGame::processInput() {
                 break;
             case SDL_MOUSEMOTION:
                 //std::cout << e.motion.x << " " << e.motion.y << std::endl;
+                break;
+            case SDL_KEYDOWN:
+                switch (e.key.keysym.sym) {
+                    case SDLK_w:
+                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+                        break;
+                     case SDLK_s:
+                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+                        break;
+                     case SDLK_a:
+                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+                        break;
+                     case SDLK_d:
+                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+                        break;
+                     case SDLK_q:
+                        m_camera.setScale(m_camera.getScale() + SCALE_SPEED);
+                        break;
+                     case SDLK_e:
+                        m_camera.setScale(m_camera.getScale() - SCALE_SPEED);
+                        break;
+                }
                 break;
         }
     }
@@ -100,8 +128,14 @@ void MainGame::drawGame() {
     GLint textureLocation = m_colorProgram.getUniformLocation("mySampler");
     glUniform1i(textureLocation, 0);
 
+    // Set constantly changing time value
     GLint timeLocation = m_colorProgram.getUniformLocation("time");
     glUniform1f(timeLocation, m_time);
+
+    // Set the camera matrix
+    GLint pLocation = m_colorProgram.getUniformLocation("P");
+    glm::mat4 cameraMatrix = m_camera.getCameraMatrix();
+    glUniformMatrix4fv(pLocation, 1, GL_FALSE, &cameraMatrix[0][0]);
 
     for (Engine::Sprite*& sprite : m_sprites) {
         sprite->draw();
