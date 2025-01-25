@@ -1,5 +1,4 @@
-#ifndef SPRITE_H
-#define SPRITE_H
+#pragma once
 
 #include "GLTexture.h"
 #include "../include/glad/glad.h"
@@ -27,5 +26,3 @@ namespace Engine {
 
     };
 }
-
-#endif

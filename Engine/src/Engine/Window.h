@@ -1,5 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include "SDL.h"
 #include "../include/glad/glad.h"
@@ -32,5 +31,3 @@ namespace Engine {
         int m_screenHeight;
     };
 }
-
-#endif

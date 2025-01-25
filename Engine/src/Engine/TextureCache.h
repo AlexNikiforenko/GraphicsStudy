@@ -1,5 +1,4 @@
-#ifndef TEXTURE_CACHE_H
-#define TEXTURE_CACHE_H
+#pragma once
 
 #include "GLTexture.h"
 #include <map>
@@ -16,4 +15,3 @@ namespace Engine {
         std::map<std::string, GLTexture> m_textureMap;
     };
 }
-#endif

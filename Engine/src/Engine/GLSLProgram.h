@@ -1,5 +1,4 @@
-#ifndef GLSLPROGRAM_H
-#define GLSLPROGRAM_H
+#pragma once
 
 #include <string>
 #include "../include/glad/glad.h"
@@ -32,5 +31,3 @@ namespace Engine {
         GLuint m_fragmentShaderID;
     };
 }
-
-#endif

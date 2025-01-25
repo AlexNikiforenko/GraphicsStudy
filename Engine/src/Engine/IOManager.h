@@ -1,5 +1,4 @@
-#ifndef IO_MANAGER_H
-#define IO_MANAGER_H
+#pragma once
 
 #include <vector>
 namespace Engine {
@@ -9,5 +8,3 @@ namespace Engine {
         static bool readFileToBuffer(std::string filePath, std::vector<unsigned char>& buffer);
     };
 }
-
-#endif

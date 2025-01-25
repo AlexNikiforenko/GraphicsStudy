@@ -1,5 +1,4 @@
-#ifndef ERRORS_H
-#define ERRORS_H
+#pragma once
 
 #include <string>
 namespace Engine {
@@ -8,4 +7,3 @@ namespace Engine {
     void logSDLImageError(std::string msg);
     void fatalError(std::string msg);
 }
-#endif

@@ -1,5 +1,7 @@
 #include "Camera2D.h"
 
+#include <iostream>
+
 namespace Engine {
     Camera2D::Camera2D()
         : m_scale(1.0f),
@@ -19,7 +21,7 @@ namespace Engine {
     void Camera2D::init(int screenWidth, int screenHeight) {
         m_screenWidth = screenWidth;
         m_screenHeight = screenHeight;
-        m_orthoMatrix = glm::ortho(0.0f, (float)m_screenWidth, 0.0f, (float)m_screenHeight);
+        m_orthoMatrix = glm::ortho(0.0f, static_cast<float>(m_screenWidth), 0.0f, static_cast<float>(m_screenHeight));
     }
 
     void Camera2D::update() {
@@ -31,18 +33,8 @@ namespace Engine {
             // Camera Scale
             glm::vec3 scale(m_scale, m_scale, 0.0f);
             m_cameraMatrix = glm::scale(glm::mat4(1.0f), scale) * m_cameraMatrix;
-
+            //printf("camera x: %f, camera y:%f\n", m_position.x, m_position.y);
             m_needsMatrixUpdate = false;
         }
-    }
-
-    void Camera2D::setPosition(const glm::vec2& m_position) {
-        this->m_position = m_position;
-        m_needsMatrixUpdate = true;
-    }
-
-    void Camera2D::setScale(float m_scale) {
-        this->m_scale = m_scale;
-        m_needsMatrixUpdate = true;
     }
 }

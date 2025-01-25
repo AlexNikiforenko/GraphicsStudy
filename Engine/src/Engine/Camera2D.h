@@ -1,5 +1,4 @@
-#ifndef CAMERA2D_H
-#define CAMERA2D_H
+#pragma once
 
 #include "../include/glm/glm.hpp"
 #include "../include/glm/gtc/matrix_transform.hpp"
@@ -16,8 +15,8 @@ namespace Engine {
         void update();
 
         // Setters
-        void setPosition(const glm::vec2& m_position);
-        void setScale(float m_scale);
+        void setPosition(const glm::vec2& position) { m_position = position; m_needsMatrixUpdate = true; }
+        void setScale(float scale) { m_scale = scale; m_needsMatrixUpdate = true; }
 
         // Getters
         glm::vec2 getPosition() { return m_position; }
@@ -35,5 +34,3 @@ namespace Engine {
 
     };
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GL_TEXTURE_H
-#define GL_TEXTURE_H
+#pragma once
 
 #include "../include/glad/glad.h"
 
@@ -11,5 +10,3 @@ namespace Engine {
         int height;
     };
 }
-
-#endif

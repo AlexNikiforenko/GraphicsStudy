@@ -1,5 +1,4 @@
-#ifndef RESOURCE_MANAGER_H
-#define RESOURCE_MANAGER_H
+#pragma once
 
 #include "TextureCache.h"
 #include "GLTexture.h"
@@ -18,5 +17,3 @@ namespace Engine {
         static TextureCache m_textureCache;
     };
 }
-
-#endif

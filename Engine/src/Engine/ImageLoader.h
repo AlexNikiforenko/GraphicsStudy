@@ -1,5 +1,4 @@
-#ifndef IMAGE_LOADER_H
-#define IMAGE_LOADER_H
+#pragma once
 
 #include "GLTexture.h"
 
@@ -14,5 +13,3 @@ namespace Engine {
         static SDL_Surface* loadSurface(std::string filePath);
     };
 }
-
-#endif

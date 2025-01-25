@@ -1,10 +1,10 @@
-#ifndef MAIN_GAME_H
-#define MAIN_GAME_H
+#pragma once
 
 #include "Engine/Window.h"
 #include "Engine/GLSLProgram.h"
 #include "Engine/Sprite.h"
 #include "Engine/GLTexture.h"
+#include "Engine/SpriteBatch.h"
 
 #include "Engine/Camera2D.h"
 
@@ -38,9 +38,10 @@ private:
     int m_screenHeight;
     GameState m_game_state;
 
-    std::vector<Engine::Sprite*> m_sprites;
     Engine::GLSLProgram m_colorProgram;
     Engine::Camera2D m_camera;
+
+    Engine::SpriteBatch m_spriteBatch;
 
     float m_fps;
     float m_maxFPS;
@@ -48,5 +49,3 @@ private:
 
     float m_time;
 };
-
-#endif

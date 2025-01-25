@@ -2,6 +2,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Errors.h"
+#include "Engine/ResourceManager.h"
 #include "SDL_image.h"
 
 #include <iostream>
@@ -19,18 +20,15 @@ MainGame::MainGame()
 
 MainGame::~MainGame()
 {
-    for (auto& sprite : m_sprites) {
-        delete sprite;
-    }
+
 }
 
 void MainGame::run() {
     initSystems();
-    m_sprites.push_back(new Engine::Sprite(0.0f, 0.0f, m_screenWidth / 2, m_screenWidth / 2, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
-    m_sprites.push_back(new Engine::Sprite(m_screenWidth / 2, 0.0f, m_screenWidth / 2, m_screenWidth / 2, "../Textures/Duck/Sprites/Idle/Idle 002.png"));
 
     // Centres camera's position
     m_camera.setPosition(m_camera.getPosition() + glm::vec2(m_screenWidth / 2.0f, m_screenHeight / 2.0f));
+
     gameLoop();
 }
 
@@ -41,6 +39,7 @@ void MainGame::initSystems() {
     m_window.create("GameEngine", m_screenWidth, m_screenHeight, 0);
 
     initShaders();
+    m_spriteBatch.init();
 }
 
 void MainGame::initShaders() {
@@ -120,10 +119,14 @@ void MainGame::processInput() {
 }
 
 void MainGame::drawGame() {
-    glClearDepth(1.0);
+    // Set the base depth to 1.0
+    glClearDepth(1.0f);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Enable the shader
     m_colorProgram.use();
+
     glActiveTexture(GL_TEXTURE0);
     GLint textureLocation = m_colorProgram.getUniformLocation("mySampler");
     glUniform1i(textureLocation, 0);
@@ -133,15 +136,29 @@ void MainGame::drawGame() {
     glUniform1f(timeLocation, m_time);
 
     // Set the camera matrix
-    GLint pLocation = m_colorProgram.getUniformLocation("P");
+    GLint pLocation = m_colorProgram.getUniformLocation("cameraMatrix");
     glm::mat4 cameraMatrix = m_camera.getCameraMatrix();
     glUniformMatrix4fv(pLocation, 1, GL_FALSE, &cameraMatrix[0][0]);
 
-    for (Engine::Sprite*& sprite : m_sprites) {
-        sprite->draw();
+    m_spriteBatch.begin();
+
+    glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
+    glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+    static Engine::GLTexture texture = Engine::ResourceManager::getTexture("../../Textures/Duck/Sprites/Idle/Idle 002.png");
+    Engine::Color color(255, 255, 255, 255);
+
+    for (int i = 0; i < 100; i++) {
+        m_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+        m_spriteBatch.draw(pos + glm::vec4(50, 0, 0, 0), uv, texture.id, 0.0f, color);
     }
 
+    m_spriteBatch.end();
+
+    m_spriteBatch.renderBatch();
+
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Disable the shader
     m_colorProgram.unuse();
 
     m_window.swapBuffer();

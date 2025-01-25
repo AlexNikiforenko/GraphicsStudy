@@ -1,5 +1,4 @@
-#ifndef VERTEX_H
-#define VERTEX_H
+#pragma once
 
 #include "../include/glad/glad.h"
 namespace Engine {
@@ -10,6 +9,11 @@ namespace Engine {
     };
 
     struct Color {
+        Color() {}
+
+        Color(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
+            : r(r), g(g), b(b), a(a) {}
+
         GLubyte r;
         GLubyte g;
         GLubyte b;
@@ -46,4 +50,3 @@ namespace Engine {
         }
     };
 }
-#endif
