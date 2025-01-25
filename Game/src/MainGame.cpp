@@ -40,6 +40,7 @@ void MainGame::initSystems() {
 
     initShaders();
     m_spriteBatch.init();
+    m_fpsLimiter.init(m_maxFPS);
 }
 
 void MainGame::initShaders() {
@@ -53,36 +54,31 @@ void MainGame::initShaders() {
 void MainGame::gameLoop() {
     while (m_game_state != GameState::EXIT) {
         // Used for frame time measuring
-        float startTicks = SDL_GetTicks();
+        m_fpsLimiter.begin();
 
         processInput();
         m_time += 0.001;
+
         m_camera.update();
         drawGame();
-        calculateFPS();
+
+        m_FPS = m_fpsLimiter.end();
 
         // prints once per 10 frames
         static int frameCounter = 0;
         frameCounter++;
         if (frameCounter == 10) {
-            std::cout << "FPS: " << m_fps << std::endl;
+            std::cout << "FPS: " << m_FPS << std::endl;
             frameCounter = 0;
         }
-
-        float frameTicks = SDL_GetTicks() - startTicks;
-
-        // Limit FPS to the max FPS
-        // if (1000.0f / m_maxFPS > frameTicks) {
-        //     SDL_Delay(1000.0f / m_maxFPS - frameTicks);
-        // }
     }
 }
 
 void MainGame::processInput() {
     SDL_Event e;
 
-    const float CAMERA_SPEED = 20.0f;
-    const float SCALE_SPEED = 0.1f;
+    const float CAMERA_SPEED = 0.2f;
+    const float SCALE_SPEED = 0.001f;
 
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
@@ -93,29 +89,33 @@ void MainGame::processInput() {
                 //std::cout << e.motion.x << " " << e.motion.y << std::endl;
                 break;
             case SDL_KEYDOWN:
-                switch (e.key.keysym.sym) {
-                    case SDLK_w:
-                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
-                        break;
-                     case SDLK_s:
-                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
-                        break;
-                     case SDLK_a:
-                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
-                        break;
-                     case SDLK_d:
-                        m_camera.setPosition(m_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
-                        break;
-                     case SDLK_q:
-                        m_camera.setScale(m_camera.getScale() + SCALE_SPEED);
-                        break;
-                     case SDLK_e:
-                        m_camera.setScale(m_camera.getScale() - SCALE_SPEED);
-                        break;
-                }
+                m_inputManager.pressKey(e.key.keysym.sym);
+                break;
+            case SDL_KEYUP:
+                m_inputManager.releaseKey(e.key.keysym.sym);
                 break;
         }
     }
+
+    if (m_inputManager.isKeyPressed(SDLK_w)) {
+        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+    }
+    if (m_inputManager.isKeyPressed(SDLK_s)) {
+        m_camera.setPosition(m_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+    }
+    if (m_inputManager.isKeyPressed(SDLK_a)) {
+        m_camera.setPosition(m_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+    }
+    if (m_inputManager.isKeyPressed(SDLK_d)) {
+        m_camera.setPosition(m_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+    }
+    if (m_inputManager.isKeyPressed(SDLK_q)) {
+        m_camera.setScale(m_camera.getScale() + SCALE_SPEED);
+    }
+    if (m_inputManager.isKeyPressed(SDLK_e)) {
+        m_camera.setScale(m_camera.getScale() - SCALE_SPEED);
+    }
+
 }
 
 void MainGame::drawGame() {
@@ -162,42 +162,4 @@ void MainGame::drawGame() {
     m_colorProgram.unuse();
 
     m_window.swapBuffer();
-}
-
-void MainGame::calculateFPS() {
-    static const int NUM_SAMPLES = 10;
-    static float frameTimes[NUM_SAMPLES];
-    static int currentFrame = 0;
-
-    static float prevTicks = SDL_GetTicks();
-    float currentTicks = SDL_GetTicks();
-
-    m_frame_time = currentTicks - prevTicks;
-    frameTimes[currentFrame % NUM_SAMPLES] = m_frame_time;
-
-    prevTicks = currentTicks;
-
-    int count;
-
-    currentFrame++;
-    if (currentFrame < NUM_SAMPLES) {
-        count = currentFrame;
-    }
-    else {
-        count = NUM_SAMPLES;
-    }
-
-    float frameTimeAverage = 0.0f;
-    for (int i = 0; i < count; i++) {
-        frameTimeAverage += frameTimes[i];
-    }
-    frameTimeAverage /= count;
-
-    if (frameTimeAverage > 0) {
-        m_fps = 1000.0f / frameTimeAverage;
-    }
-    else {
-        m_fps = 60.0f;
-    }
-
 }

@@ -5,6 +5,8 @@
 #include "Engine/Sprite.h"
 #include "Engine/GLTexture.h"
 #include "Engine/SpriteBatch.h"
+#include "Engine/InputManager.h"
+#include "Engine/Timing.h"
 
 #include "Engine/Camera2D.h"
 
@@ -43,9 +45,10 @@ private:
 
     Engine::SpriteBatch m_spriteBatch;
 
-    float m_fps;
-    float m_maxFPS;
-    float m_frame_time;
+    Engine::InputManager m_inputManager;
+    Engine::FPSLimiter m_fpsLimiter;
 
+    float m_maxFPS;
+    float m_FPS;
     float m_time;
 };
