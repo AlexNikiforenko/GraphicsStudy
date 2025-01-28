@@ -60,6 +60,17 @@ void MainGame::gameLoop() {
         m_time += 0.001;
 
         m_camera.update();
+
+        // Update bullets
+        for (int i = 0; i < m_bullets.size();) {
+            if (m_bullets[i].update()) {
+                m_bullets[i] = m_bullets.back();
+                m_bullets.pop_back();
+            }
+            else {
+                i++;
+            }
+        }
         drawGame();
 
         m_FPS = m_fpsLimiter.end();
@@ -125,7 +136,12 @@ void MainGame::processInput() {
     if (m_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
         glm::vec2 mouseCoords = m_inputManager.getMouseCoords();
         mouseCoords = m_camera.convertScreenToWorld(mouseCoords);
-        std::cout << mouseCoords.x << " " << mouseCoords.y << std::endl;
+
+        glm::vec2 playerPosition(0.0f);
+        glm::vec2 direction = mouseCoords - playerPosition;
+        direction = glm::normalize(direction);
+
+        m_bullets.emplace_back(playerPosition, direction, 1.0f, 1000);
     }
 
 }
@@ -160,6 +176,10 @@ void MainGame::drawGame() {
     Engine::Color color(255, 255, 255, 255);
 
     m_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+
+    for (Bullet& b : m_bullets) {
+        b.draw(m_spriteBatch);
+    }
 
     m_spriteBatch.end();
 

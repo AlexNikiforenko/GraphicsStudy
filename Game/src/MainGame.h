@@ -7,8 +7,9 @@
 #include "Engine/SpriteBatch.h"
 #include "Engine/InputManager.h"
 #include "Engine/Timing.h"
-
 #include "Engine/Camera2D.h"
+
+#include "Bullet.h"
 
 #include "SDL2/SDL.h"
 
@@ -47,6 +48,8 @@ private:
 
     Engine::InputManager m_inputManager;
     Engine::FPSLimiter m_fpsLimiter;
+
+    std::vector<Bullet> m_bullets;
 
     float m_maxFPS;
     float m_FPS;

@@ -39,6 +39,9 @@ namespace Engine {
     }
 
     glm::vec2 Camera2D::convertScreenToWorld(glm::vec2 screenCoords) {
+        // Invert Y-direction
+        screenCoords.y = m_screenHeight - screenCoords.y;
+
         // Make it so that 0 is the center
         screenCoords -= glm::vec2(m_screenWidth / 2, m_screenHeight / 2);
 
