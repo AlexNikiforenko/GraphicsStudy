@@ -56,9 +56,9 @@ namespace Engine {
         // Set VSync
         SDL_GL_SetSwapInterval(0);
 
-        GLuint vaoID;
-        glGenVertexArrays(1, &vaoID);
-        glBindVertexArray(vaoID);
+        // Enable alpha blend
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         return 0; // TODO: add error codes
     }

@@ -27,7 +27,7 @@ void MainGame::run() {
     initSystems();
 
     // Centres camera's position
-    m_camera.setPosition(m_camera.getPosition() + glm::vec2(m_screenWidth / 2.0f, m_screenHeight / 2.0f));
+    //m_camera.setPosition(m_camera.getPosition() + glm::vec2(m_screenWidth / 2.0f, m_screenHeight / 2.0f));
 
     gameLoop();
 }
@@ -67,7 +67,7 @@ void MainGame::gameLoop() {
         // prints once per 10 frames
         static int frameCounter = 0;
         frameCounter++;
-        if (frameCounter == 10) {
+        if (frameCounter == 10000) {
             std::cout << "FPS: " << m_FPS << std::endl;
             frameCounter = 0;
         }
@@ -85,14 +85,20 @@ void MainGame::processInput() {
             case SDL_QUIT:
                 m_game_state = GameState::EXIT;
                 break;
-            case SDL_MOUSEMOTION:
-                //std::cout << e.motion.x << " " << e.motion.y << std::endl;
-                break;
             case SDL_KEYDOWN:
                 m_inputManager.pressKey(e.key.keysym.sym);
                 break;
             case SDL_KEYUP:
                 m_inputManager.releaseKey(e.key.keysym.sym);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                m_inputManager.pressKey(e.button.button);
+                break;
+             case SDL_MOUSEBUTTONUP:
+                m_inputManager.releaseKey(e.button.button);
+                break;
+            case SDL_MOUSEMOTION:
+                m_inputManager.setMouseCoords(e.motion.x, e.motion.y);
                 break;
         }
     }
@@ -110,10 +116,16 @@ void MainGame::processInput() {
         m_camera.setPosition(m_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
     }
     if (m_inputManager.isKeyPressed(SDLK_q)) {
-        m_camera.setScale(m_camera.getScale() + SCALE_SPEED);
+        m_camera.setScale(m_camera.getScale() * (1 + SCALE_SPEED));
     }
     if (m_inputManager.isKeyPressed(SDLK_e)) {
-        m_camera.setScale(m_camera.getScale() - SCALE_SPEED);
+        m_camera.setScale(m_camera.getScale() * (1 - SCALE_SPEED));
+    }
+
+    if (m_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
+        glm::vec2 mouseCoords = m_inputManager.getMouseCoords();
+        mouseCoords = m_camera.convertScreenToWorld(mouseCoords);
+        std::cout << mouseCoords.x << " " << mouseCoords.y << std::endl;
     }
 
 }
@@ -132,8 +144,8 @@ void MainGame::drawGame() {
     glUniform1i(textureLocation, 0);
 
     // Set constantly changing time value
-    GLint timeLocation = m_colorProgram.getUniformLocation("time");
-    glUniform1f(timeLocation, m_time);
+    // GLint timeLocation = m_colorProgram.getUniformLocation("time");
+    // glUniform1f(timeLocation, m_time);
 
     // Set the camera matrix
     GLint pLocation = m_colorProgram.getUniformLocation("cameraMatrix");
@@ -147,10 +159,7 @@ void MainGame::drawGame() {
     static Engine::GLTexture texture = Engine::ResourceManager::getTexture("../../Textures/Duck/Sprites/Idle/Idle 002.png");
     Engine::Color color(255, 255, 255, 255);
 
-    for (int i = 0; i < 100; i++) {
-        m_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
-        m_spriteBatch.draw(pos + glm::vec4(50, 0, 0, 0), uv, texture.id, 0.0f, color);
-    }
+    m_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
 
     m_spriteBatch.end();
 

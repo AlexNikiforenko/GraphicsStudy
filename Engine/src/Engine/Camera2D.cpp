@@ -37,4 +37,17 @@ namespace Engine {
             m_needsMatrixUpdate = false;
         }
     }
+
+    glm::vec2 Camera2D::convertScreenToWorld(glm::vec2 screenCoords) {
+        // Make it so that 0 is the center
+        screenCoords -= glm::vec2(m_screenWidth / 2, m_screenHeight / 2);
+
+        // Scale the coordinates
+        screenCoords /= m_scale;
+
+        // Translate with the camera position
+        screenCoords += m_position;
+
+        return screenCoords;
+    }
 }
