@@ -29,8 +29,9 @@ namespace Engine {
 
         float frameTicks = SDL_GetTicks() - m_startTicks;
         //Limit FPS to the max FPS
-        if (1000.0f / m_maxFPS > m_startTicks) {
-            SDL_Delay(1000.0f / m_maxFPS - frameTicks);
+        float desiredFrameTime = 1000.0f / m_maxFPS; // Duration of frame
+        if (frameTicks < desiredFrameTime) {
+            SDL_Delay(desiredFrameTime - frameTicks);
         }
 
         return m_FPS;

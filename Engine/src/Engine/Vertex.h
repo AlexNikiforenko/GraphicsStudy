@@ -14,6 +14,13 @@ namespace Engine {
         Color(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
             : r(r), g(g), b(b), a(a) {}
 
+        void setColor(GLubyte r, GLubyte g, GLubyte b, GLubyte a) {
+            this->r = r;
+            this->g = g;
+            this->b = b;
+            this->a = a;
+        }
+
         GLubyte r;
         GLubyte g;
         GLubyte b;
